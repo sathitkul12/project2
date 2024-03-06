@@ -175,7 +175,7 @@ class _CardMoistureState extends State<CardMoisture> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const PopupTempIn()),
+                MaterialPageRoute(builder: (context) => const PopupTempFloor()),
               );
             },
             child: buildInfoContainer(

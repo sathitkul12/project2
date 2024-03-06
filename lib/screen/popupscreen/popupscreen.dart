@@ -20,6 +20,7 @@ class _PopupLightState extends State<PopupLight> {
   String selectedMinute = '00';
   TimeOfDay selectedClosingTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime1 = TimeOfDay.now();
+  double? LdrDifference;
 
   @override
   Widget build(BuildContext context) {
@@ -220,6 +221,12 @@ class _PopupLightState extends State<PopupLight> {
             const SizedBox(width: 15),
             ElevatedButton(
               onPressed: () {
+                // Calculate the temperature difference
+                LdrDifference =
+                    maxLdr != null && minLdr != null ? maxLdr! - minLdr! : null;
+
+                // Print the difference
+                print('Temperature Difference: $LdrDifference');
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
@@ -440,17 +447,10 @@ class _PopupTempState extends State<PopupTemp> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Calculate the temperature difference
-                    temperatureDifference =
-                        maxTemperature != null && minTemperature != null
-                            ? maxTemperature! - minTemperature!
-                            : null;
-
-                    // Print the difference
-                    print('Temperature Difference: $temperatureDifference');
-
-                    // Navigate to CardAmmonia with the temperature difference
-                    Navigator.pop(context, temperatureDifference);
+                    // Use minTemperature and maxTemperature as needed
+                    print('Minimum Temperature: $minTemperature');
+                    print('Maximum Temperature: $maxTemperature');
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF5B68DD),
@@ -502,7 +502,7 @@ class _PopupSmellState extends State<PopupSmell> {
       List.generate(60, (index) => index.toString().padLeft(2, '0'));
   double? minMq;
   double? maxMq;
-
+  double? MqDifference;
   TimeOfDay selectedClosingTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime1 = TimeOfDay.now();
   @override
@@ -531,7 +531,7 @@ class _PopupSmellState extends State<PopupSmell> {
             const Padding(
               padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
               child: Text(
-                'Temperature Range',
+                'Ammonia Range',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -686,8 +686,8 @@ class _PopupSmellState extends State<PopupSmell> {
             ElevatedButton(
               onPressed: () {
                 // Use minTemperature and maxTemperature as needed
-                print('Minimum Ammonai: $minMq');
-                print('Maximum Ammonai: $maxMq');
+                print('Minimum Ammonia: $minMq');
+                print('Maximum Ammonia: $maxMq');
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
@@ -724,23 +724,26 @@ class _PopupSmellState extends State<PopupSmell> {
   }
 }
 
-class PopupTempIn extends StatefulWidget {
-  const PopupTempIn({Key? key}) : super(key: key);
+class PopupTempFloor extends StatefulWidget {
+  const PopupTempFloor({Key? key}) : super(key: key);
 
   @override
-  State<PopupTempIn> createState() => _PopupTempInState();
+  State<PopupTempFloor> createState() => _PopupTempFloorState();
 }
 
-class _PopupTempInState extends State<PopupTempIn> {
-  final TextEditingController _fullController = TextEditingController();
-  final TextEditingController _pointController = TextEditingController();
+class _PopupTempFloorState extends State<PopupTempFloor> {
+  final TextEditingController _minController = TextEditingController();
+  final TextEditingController _maxController = TextEditingController();
   List<String> minute =
       List.generate(60, (index) => index.toString().padLeft(2, '0'));
 
+  double? minHum;
+  double? maxHum;
   String selectedTime = '00';
   String selectedMinute = '00';
   TimeOfDay selectedClosingTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime1 = TimeOfDay.now();
+  double? HumDifference;
 
   @override
   Widget build(BuildContext context) {
@@ -768,7 +771,7 @@ class _PopupTempInState extends State<PopupTempIn> {
                 const Padding(
                   padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
                   child: Text(
-                    'สปริงเกอร์บนหลังคา',
+                    'Humidity Range',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -784,30 +787,36 @@ class _PopupTempInState extends State<PopupTempIn> {
                       child: SizedBox(
                         width: 100,
                         child: TextField(
-                          controller: _fullController,
+                          controller: _minController,
+                          keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            labelText: 'ต่ำสุด',
+                            labelText: 'Minimum',
                             border: OutlineInputBorder(),
                           ),
                           onChanged: (value) {
-                            // Do something with the entered value
+                            setState(() {
+                              minHum = double.tryParse(value);
+                            });
                           },
                         ),
                       ),
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 15),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
                         width: 100,
                         child: TextField(
-                          controller: _pointController,
+                          controller: _maxController,
+                          keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            labelText: 'สูงสุด',
+                            labelText: 'Maximum',
                             border: OutlineInputBorder(),
                           ),
                           onChanged: (value) {
-                            // Do something with the entered value
+                            setState(() {
+                              maxHum = double.tryParse(value);
+                            });
                           },
                         ),
                       ),
@@ -916,6 +925,9 @@ class _PopupTempInState extends State<PopupTempIn> {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    // Use minTemperature and maxTemperature as needed
+                    print('Minimum Light: $minHum');
+                    print('Maximum Light: $maxHum');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -931,6 +943,13 @@ class _PopupTempInState extends State<PopupTempIn> {
                 const SizedBox(width: 15),
                 ElevatedButton(
                   onPressed: () {
+                    // Calculate the temperature difference
+                    HumDifference = maxHum != null && minHum != null
+                        ? maxHum! - minHum!
+                        : null;
+
+                    // Print the difference
+                    print('Temperature Difference: $HumDifference');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -961,15 +980,18 @@ class PopupMoisture extends StatefulWidget {
 }
 
 class _PopupMoistureState extends State<PopupMoisture> {
-  final TextEditingController _fullController = TextEditingController();
-  final TextEditingController _pointController = TextEditingController();
+  final TextEditingController _minController = TextEditingController();
+  final TextEditingController _maxController = TextEditingController();
   List<String> minute =
       List.generate(60, (index) => index.toString().padLeft(2, '0'));
 
+  double? minSoil;
+  double? maxSoil;
   String selectedTime = '00';
   String selectedMinute = '00';
   TimeOfDay selectedClosingTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime1 = TimeOfDay.now();
+  double? SoilDifference;
 
   @override
   Widget build(BuildContext context) {
@@ -1013,30 +1035,36 @@ class _PopupMoistureState extends State<PopupMoisture> {
                       child: SizedBox(
                         width: 100,
                         child: TextField(
-                          controller: _fullController,
+                          controller: _minController,
+                          keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            labelText: 'ต่ำสุด',
+                            labelText: 'Minimum',
                             border: OutlineInputBorder(),
                           ),
                           onChanged: (value) {
-                            // Do something with the entered value
+                            setState(() {
+                              minSoil = double.tryParse(value);
+                            });
                           },
                         ),
                       ),
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 15),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
                         width: 100,
                         child: TextField(
-                          controller: _pointController,
+                          controller: _maxController,
+                          keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            labelText: 'สูงสุด',
+                            labelText: 'Maximum',
                             border: OutlineInputBorder(),
                           ),
                           onChanged: (value) {
-                            // Do something with the entered value
+                            setState(() {
+                              maxSoil = double.tryParse(value);
+                            });
                           },
                         ),
                       ),
@@ -1145,6 +1173,9 @@ class _PopupMoistureState extends State<PopupMoisture> {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    // Use minTemperature and maxTemperature as needed
+                    print('Minimum Light: $minSoil');
+                    print('Maximum Light: $maxSoil');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -1160,6 +1191,13 @@ class _PopupMoistureState extends State<PopupMoisture> {
                 const SizedBox(width: 15),
                 ElevatedButton(
                   onPressed: () {
+                    // Calculate the temperature difference
+                    SoilDifference = maxSoil != null && minSoil != null
+                        ? maxSoil! - minSoil!
+                        : null;
+
+                    // Print the difference
+                    print('Temperature Difference: $SoilDifference');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(

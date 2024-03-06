@@ -16,7 +16,6 @@ class CardHeat extends StatefulWidget {
 class _CardHeatState extends State<CardHeat> {
   // Instantiate MqttHandler
   final MqttHandler mqttHandler = MqttHandler();
-
   bool isOpen = false;
   bool isAuto = false;
   bool isAutoMode = false;
@@ -28,7 +27,7 @@ class _CardHeatState extends State<CardHeat> {
     // Subscribe to the LDR stream to get real-time updates
     mqttHandler.ldrStream.listen((double ldrValue) {
       setState(() {
-        // Update the state variable if needed
+        ldrValue = ldrValue;
       });
     });
   }
