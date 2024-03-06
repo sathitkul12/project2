@@ -47,7 +47,7 @@ class _PopupLightState extends State<PopupLight> {
             const Padding(
               padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
               child: Text(
-                'Temperature Range',
+                'Light Range',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -202,8 +202,8 @@ class _PopupLightState extends State<PopupLight> {
             ElevatedButton(
               onPressed: () {
                 // Use minTemperature and maxTemperature as needed
-                print('Minimum Temperature: $minLdr');
-                print('Maximum Temperature: $maxLdr');
+                print('Minimum Light: $minLdr');
+                print('Maximum Light: $maxLdr');
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
