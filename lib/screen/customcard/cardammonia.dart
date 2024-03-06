@@ -50,7 +50,7 @@ class _CardAmmoniaState extends State<CardAmmonia> {
       if (mqValue > mqMax) {
         turnOnRelay2(); // คำสั่งสำหรับจัดการเมื่ออุณหภูมิสูงกว่าค่าสูงสุด
       } else if (mqValue < mqMin) {
-        turnOffRelay2(); // คำสั่งสำหรับจัดการเมื่ออุณหภูมิต่ำกว่าค่าต่ำสุด
+        turnOffRelay2();
       }
     });
 
