@@ -16,35 +16,10 @@ class NotificationScreen extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-            showNotification();
-          },
+          onPressed: () {},
           child: Text('Show Notification'),
         ),
       ),
-    );
-  }
-
-  Future<void> showNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'my_app_notifications', // your unique channel id
-      'My App Notifications', // your channel name
-      channelDescription:
-          'Receive notifications from My App', // your channel description
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      'Notification Title',
-      'This is the notification content',
-      platformChannelSpecifics,
-      payload: 'item x',
     );
   }
 }
