@@ -220,7 +220,7 @@ class _CardAmmoniaState extends State<CardAmmonia> {
           ),
         ),
         Text(
-          isOpen ? 'เปิด' : 'ปิด ',
+          isOpen1 ? 'เปิด' : 'ปิด ',
           style: TextStyle(
             color: isOpen1 ? Colors.green : Colors.red,
             fontSize: 18,
@@ -228,7 +228,7 @@ class _CardAmmoniaState extends State<CardAmmonia> {
           ),
         ),
         const Text(
-          'สถานะ : ',
+          ' สถานะ : ',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,

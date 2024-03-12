@@ -221,7 +221,7 @@ class _CardMoistureState extends State<CardMoisture> {
           ),
         ),
         Text(
-          isOpen ? 'เปิด' : 'ปิด',
+          isOpen1 ? 'เปิด' : 'ปิด',
           style: TextStyle(
             color: isOpen1 ? Colors.green : Colors.red,
             fontSize: 18,
