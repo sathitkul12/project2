@@ -926,8 +926,8 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                 ElevatedButton(
                   onPressed: () {
                     // Use minTemperature and maxTemperature as needed
-                    print('Minimum Light: $minHum');
-                    print('Maximum Light: $maxHum');
+                    print('Minimum Humidity: $minHum');
+                    print('Maximum Humidity: $maxHum');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -1019,7 +1019,7 @@ class _PopupMoistureState extends State<PopupMoisture> {
                 const Padding(
                   padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
                   child: Text(
-                    'สปริงเกอร์รดน้ำต้นไม้',
+                    'Moisture Range',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -1174,8 +1174,8 @@ class _PopupMoistureState extends State<PopupMoisture> {
                 ElevatedButton(
                   onPressed: () {
                     // Use minTemperature and maxTemperature as needed
-                    print('Minimum Light: $minSoil');
-                    print('Maximum Light: $maxSoil');
+                    print('Minimum Moisture: $minSoil');
+                    print('Maximum Moisture: $maxSoil');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
