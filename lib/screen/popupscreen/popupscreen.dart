@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pheasant_house/screen/popupscreen/customdropdown.dart';
 
 class PopupLight extends StatefulWidget {
-  const PopupLight({Key? key}) : super(key: key);
+  final double? minLdr;
+  final double? maxLdr;
+
+  const PopupLight({Key? key, this.minLdr, this.maxLdr}) : super(key: key);
 
   @override
   State<PopupLight> createState() => _PopupLightState();

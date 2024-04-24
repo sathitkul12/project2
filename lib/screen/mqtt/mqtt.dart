@@ -15,6 +15,18 @@ class MqttHandler {
   final String soilTopic = 'esp32/soil';
   final String autoModeTopic = 'esp32/auto_mode';
 
+  final String maxtemp = "esp32/maxtemp";
+  final String maxhumidity = "esp32/maxhumidity";
+  final String maxldr = "esp32/maxldr";
+  final String maxmq = "esp32/maxmq";
+  final String maxsoil = "esp32/maxsoil";
+  final String mintemp = "esp32/mintemp";
+  final String minhumidity = "esp32/minhumidity";
+  final String minldr = "esp32/minldr";
+  final String minmq = "esp32/minmq";
+  final String minsoil = "esp32/minsoil";
+  double minLdrValue = 0.0; // Example initial value for minLdr
+  double maxLdrValue = 0.0; // Example initial value for maxLdr
   // MQTT client and StreamControllers for different sensor data
   late MqttServerClient client;
   final StreamController<double> _temperatureStreamController =
