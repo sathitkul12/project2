@@ -251,7 +251,10 @@ class _PopupLightState extends State<PopupLight> {
 }
 
 class PopupTemp extends StatefulWidget {
-  const PopupTemp({Key? key}) : super(key: key);
+  final double? minTemp;
+  final double? maxTemp;
+
+  const PopupTemp({Key? key, this.minTemp, this.maxTemp}) : super(key: key);
 
   @override
   State<PopupTemp> createState() => _PopupTempState();
@@ -262,8 +265,8 @@ class _PopupTempState extends State<PopupTemp> {
   final TextEditingController _maxController = TextEditingController();
   List<String> minute =
       List.generate(60, (index) => index.toString().padLeft(2, '0'));
-  double? minTemperature;
-  double? maxTemperature;
+  double? minTemp;
+  double? maxTemp;
   String selectedTime = '00';
   String selectedMinute = '00';
   TimeOfDay selectedClosingTime = TimeOfDay.now();
@@ -320,7 +323,7 @@ class _PopupTempState extends State<PopupTemp> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              minTemperature = double.tryParse(value);
+                              minTemp = double.tryParse(value);
                             });
                           },
                         ),
@@ -340,7 +343,7 @@ class _PopupTempState extends State<PopupTemp> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              maxTemperature = double.tryParse(value);
+                              maxTemp = double.tryParse(value);
                             });
                           },
                         ),
@@ -451,8 +454,8 @@ class _PopupTempState extends State<PopupTemp> {
                 ElevatedButton(
                   onPressed: () {
                     // Use minTemperature and maxTemperature as needed
-                    print('Minimum Temperature: $minTemperature');
-                    print('Maximum Temperature: $maxTemperature');
+                    print('Minimum Temperature: $minTemp');
+                    print('Maximum Temperature: $maxTemp');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -492,7 +495,10 @@ class _PopupTempState extends State<PopupTemp> {
 }
 
 class PopupSmell extends StatefulWidget {
-  const PopupSmell({Key? key}) : super(key: key);
+  final double? minMq;
+  final double? maxMq;
+
+  const PopupSmell({Key? key, this.minMq, this.maxMq}) : super(key: key);
 
   @override
   State<PopupSmell> createState() => _PopupSmellState();
@@ -728,7 +734,10 @@ class _PopupSmellState extends State<PopupSmell> {
 }
 
 class PopupTempFloor extends StatefulWidget {
-  const PopupTempFloor({Key? key}) : super(key: key);
+  final double? minHum;
+  final double? maxHum;
+
+  const PopupTempFloor({Key? key, this.minHum, this.maxHum}) : super(key: key);
 
   @override
   State<PopupTempFloor> createState() => _PopupTempFloorState();
@@ -976,7 +985,10 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
 }
 
 class PopupMoisture extends StatefulWidget {
-  const PopupMoisture({Key? key}) : super(key: key);
+  final double? minSoil;
+  final double? maxSoil;
+
+  const PopupMoisture({Key? key, this.minSoil, this.maxSoil}) : super(key: key);
 
   @override
   State<PopupMoisture> createState() => _PopupMoistureState();

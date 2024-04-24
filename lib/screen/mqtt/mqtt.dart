@@ -15,18 +15,28 @@ class MqttHandler {
   final String soilTopic = 'esp32/soil';
   final String autoModeTopic = 'esp32/auto_mode';
 
-  final String maxtemp = "esp32/maxtemp";
-  final String maxhumidity = "esp32/maxhumidity";
-  final String maxldr = "esp32/maxldr";
-  final String maxmq = "esp32/maxmq";
-  final String maxsoil = "esp32/maxsoil";
-  final String mintemp = "esp32/mintemp";
-  final String minhumidity = "esp32/minhumidity";
-  final String minldr = "esp32/minldr";
-  final String minmq = "esp32/minmq";
-  final String minsoil = "esp32/minsoil";
-  double minLdrValue = 0.0; // Example initial value for minLdr
-  double maxLdrValue = 0.0; // Example initial value for maxLdr
+  final String maxTemp = "esp32/maxtemp";
+  final String maxHum = "esp32/maxhumidity";
+  final String maxLdr = "esp32/maxldr";
+  final String maxMq = "esp32/maxmq";
+  final String maxSoil = "esp32/maxsoil";
+  final String minTemp = "esp32/mintemp";
+  final String minHum = "esp32/minhumidity";
+  final String minLdr = "esp32/minldr";
+  final String minMq = "esp32/minmq";
+  final String minSoil = "esp32/minsoil";
+
+  double minLdrValue = 0.0;
+  double maxLdrValue = 0.0;
+  double minMqValue = 0.0;
+  double maxMqValue = 0.0;
+  double minSoilValue = 0.0;
+  double maxSoilValue = 0.0;
+  double minTempValue = 0.0;
+  double maxTempValue = 0.0;
+  double minHumValue = 0.0;
+  double maxHumValue = 0.0;
+
   // MQTT client and StreamControllers for different sensor data
   late MqttServerClient client;
   final StreamController<double> _temperatureStreamController =
@@ -51,6 +61,62 @@ class MqttHandler {
   MqttHandler() {
     client = MqttServerClient(mqttServer, clientId);
     _setupMqtt();
+  }
+
+  void publishValues() {
+    // Publish minLdrValue
+    final minLdrBuilder = MqttClientPayloadBuilder();
+    minLdrBuilder.addString(minLdrValue.toString());
+    client.publishMessage(minLdr, MqttQos.exactlyOnce, minLdrBuilder.payload!);
+
+    // Publish maxLdrValue
+    final maxLdrBuilder = MqttClientPayloadBuilder();
+    maxLdrBuilder.addString(maxLdrValue.toString());
+    client.publishMessage(maxLdr, MqttQos.exactlyOnce, maxLdrBuilder.payload!);
+
+    // Publish minTempValue
+    final minTempBuilder = MqttClientPayloadBuilder();
+    minTempBuilder.addString(minTempValue.toString());
+    client.publishMessage(
+        minTemp, MqttQos.exactlyOnce, minTempBuilder.payload!);
+
+    // Publish maxTempValue
+    final maxTempBuilder = MqttClientPayloadBuilder();
+    maxTempBuilder.addString(maxTempValue.toString());
+    client.publishMessage(
+        maxTemp, MqttQos.exactlyOnce, maxTempBuilder.payload!);
+
+    // Publish minHumValue
+    final minHumBuilder = MqttClientPayloadBuilder();
+    minHumBuilder.addString(minHumValue.toString());
+    client.publishMessage(minHum, MqttQos.exactlyOnce, minHumBuilder.payload!);
+
+    // Publish maxHumValue
+    final maxHumBuilder = MqttClientPayloadBuilder();
+    maxHumBuilder.addString(maxHumValue.toString());
+    client.publishMessage(maxHum, MqttQos.exactlyOnce, maxHumBuilder.payload!);
+
+    // Publish minMqValue
+    final minMqBuilder = MqttClientPayloadBuilder();
+    minMqBuilder.addString(minMqValue.toString());
+    client.publishMessage(minMq, MqttQos.exactlyOnce, minMqBuilder.payload!);
+
+    // Publish maxMqValue
+    final maxMqBuilder = MqttClientPayloadBuilder();
+    maxMqBuilder.addString(maxMqValue.toString());
+    client.publishMessage(maxMq, MqttQos.exactlyOnce, maxMqBuilder.payload!);
+
+    // Publish minSoilValue
+    final minSoilBuilder = MqttClientPayloadBuilder();
+    minSoilBuilder.addString(minSoilValue.toString());
+    client.publishMessage(
+        minSoil, MqttQos.exactlyOnce, minSoilBuilder.payload!);
+
+    // Publish maxSoilValue
+    final maxSoilBuilder = MqttClientPayloadBuilder();
+    maxSoilBuilder.addString(maxSoilValue.toString());
+    client.publishMessage(
+        maxSoil, MqttQos.exactlyOnce, maxSoilBuilder.payload!);
   }
 
   // Set up MQTT connection and subscriptions
