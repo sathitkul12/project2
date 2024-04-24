@@ -16,7 +16,9 @@ class NotificationScreen extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            print('sus');
+          },
           child: Text('Show Notification'),
         ),
       ),
