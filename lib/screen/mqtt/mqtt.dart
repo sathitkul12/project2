@@ -17,12 +17,12 @@ class MqttHandler {
 
   final String maxTemp = "esp32/maxtemp";
   final String maxHum = "esp32/maxhumidity";
-  final String maxLdr = "esp32/maxldr";
+  final String maxLdr = "esp32/maxLdr";
   final String maxMq = "esp32/maxmq";
   final String maxSoil = "esp32/maxsoil";
   final String minTemp = "esp32/mintemp";
   final String minHum = "esp32/minhumidity";
-  final String minLdr = "esp32/minldr";
+  final String minLdr = "esp32/minLdr";
   final String minMq = "esp32/minmq";
   final String minSoil = "esp32/minsoil";
 
