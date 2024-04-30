@@ -20,8 +20,6 @@ class _CardHeatState extends State<CardHeat> {
   bool isAuto = false;
   bool isAutoMode = false;
   bool isrelaylight = false;
-  double minLdrValue = 0.0;
-  double maxLdrValue = 0.0;
   @override
   void initState() {
     super.initState();
@@ -193,11 +191,8 @@ class _CardHeatState extends State<CardHeat> {
           sizedBox,
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PopupLight(
-                          minLdr: minLdrValue, maxLdr: maxLdrValue)));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PopupLight()));
             },
             child: Container(
               width: MediaQuery.of(context).size.width / 1.6,
