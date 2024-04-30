@@ -38,20 +38,11 @@ class _CardAmmoniaState extends State<CardAmmonia> {
     mqValue = 0.0;
     temperatureValue = 0.0;
     mqttHandler = MqttHandler();
-    double mqMax = 0.0;
-    double mqMin = 0.0;
-    double tempMax = 0.0;
-    double tempMin = 0.0;
     // Subscribe to the MQ stream to get real-time updates
     mqttHandler.mqStream.listen((double value) {
       setState(() {
         mqValue = value;
       });
-      if (mqValue > mqMax) {
-        turnOnRelay2(); // คำสั่งสำหรับจัดการเมื่ออุณหภูมิสูงกว่าค่าสูงสุด
-      } else if (mqValue < mqMin) {
-        turnOffRelay2();
-      }
     });
 
     // Subscribe to the temperature stream to get real-time updates
@@ -59,11 +50,6 @@ class _CardAmmoniaState extends State<CardAmmonia> {
       setState(() {
         temperatureValue = value;
       });
-      if (temperatureValue > tempMax) {
-        turnOnRelay2(); // คำสั่งสำหรับจัดการเมื่ออุณหภูมิสูงกว่าค่าสูงสุด
-      } else if (temperatureValue < tempMin) {
-        turnOffRelay2(); // คำสั่งสำหรับจัดการเมื่ออุณหภูมิต่ำกว่าค่าต่ำสุด
-      }
     });
   }
 
