@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pheasant_house/screen/mqtt/mqtt.dart';
 import 'package:pheasant_house/screen/popupscreen/customdropdown.dart';
 
 class PopupLight extends StatefulWidget {
@@ -19,234 +20,251 @@ class _PopupLightState extends State<PopupLight> {
 
   double? minLdr;
   double? maxLdr;
-  String selectedTime = '00';
-  String selectedMinute = '00';
+  TimeOfDay selectedOpeningTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime = TimeOfDay.now();
-  TimeOfDay selectedClosingTime1 = TimeOfDay.now();
   double? LdrDifference;
+
+  late MqttHandler mqttHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    mqttHandler = MqttHandler();
+    mqttHandler.connectAndSubscribe();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 40),
-          child: Center(
-            child: Text(
-              'ตั้งค่าการทำงานอัตโนมัติ',
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Color(0xffffffff),
-              ),
-            ),
-          ),
-        ),
-        // Light Intensity
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: SafeArea(
+        child: Column(
           children: [
             const Padding(
-              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-              child: Text(
-                'Light Range',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xffffffff),
+              padding: EdgeInsets.only(top: 40),
+              child: Center(
+                child: Text(
+                  'ตั้งค่าการทำงานอัตโนมัติ',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffffffff),
+                  ),
                 ),
               ),
             ),
+            // Light Intensity
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+                  child: Text(
+                    'Light Range',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffffffff),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 100,
+                        child: TextField(
+                          controller: _minController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: 'Minimum',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              minLdr = double.tryParse(value);
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 100,
+                        child: TextField(
+                          controller: _maxController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: 'Maximum',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              maxLdr = double.tryParse(value);
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            // Opening Time
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+                  child: Text(
+                    'Opening Time',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffffffff),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        TimeOfDay? pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: selectedOpeningTime,
+                        );
+                        if (pickedTime != null &&
+                            pickedTime != selectedOpeningTime) {
+                          setState(() {
+                            selectedOpeningTime = pickedTime;
+                          });
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: Text(
+                        selectedOpeningTime.format(context),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            // Closing Time
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+                  child: Text(
+                    'Closing Time',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffffffff),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        TimeOfDay? pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: selectedClosingTime,
+                        );
+                        if (pickedTime != null &&
+                            pickedTime != selectedClosingTime) {
+                          setState(() {
+                            selectedClosingTime = pickedTime;
+                          });
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: Text(
+                        selectedClosingTime.format(context),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 100,
-                    child: TextField(
-                      controller: _minController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Minimum',
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          minLdr = double.tryParse(value);
-                        });
-                      },
+                ElevatedButton(
+                  onPressed: () {
+                    // Use minLdr and maxLdr as needed
+                    String openingTimeMessage =
+                        '${selectedOpeningTime.format(context)}';
+                    String closingTimeMessage =
+                        '${selectedClosingTime.format(context)}';
+                    mqttHandler.sendAutoModeCommand(
+                        'esp32/timeon', openingTimeMessage);
+                    mqttHandler.sendAutoModeCommand(
+                        'esp32/timeoff', closingTimeMessage);
+                    print('Opening Time: $openingTimeMessage');
+                    print('Closing Time: $closingTimeMessage');
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5B68DD),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
+                  ),
+                  child: const Text(
+                    'ตกลง',
+                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
                   ),
                 ),
                 const SizedBox(width: 15),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 100,
-                    child: TextField(
-                      controller: _maxController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Maximum',
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          maxLdr = double.tryParse(value);
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-
-        // Opening Time
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-              child: Text(
-                'Opening Time',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xffffffff),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
                 ElevatedButton(
-                  onPressed: () async {
-                    TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: selectedClosingTime,
-                    );
-                    if (pickedTime != null &&
-                        pickedTime != selectedClosingTime) {
-                      setState(() {
-                        selectedClosingTime = pickedTime;
-                      });
-                    }
+                  onPressed: () {
+                    // Calculate the light difference
+                    LdrDifference = maxLdr != null && minLdr != null
+                        ? maxLdr! - minLdr!
+                        : null;
+                    // Print the difference
+                    print('Light Difference: $LdrDifference');
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                  ),
-                  child: Text(
-                    selectedClosingTime.format(context),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
+                    backgroundColor: const Color(0xFFE85E5E),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                ),
+                  child: const Text(
+                    'ยกเลิก',
+                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
+                  ),
+                )
               ],
             ),
           ],
         ),
-
-        // Closing Time
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-              child: Text(
-                'Closing Time',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xffffffff),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: selectedClosingTime1,
-                    );
-                    if (pickedTime != null &&
-                        pickedTime != selectedClosingTime1) {
-                      setState(() {
-                        selectedClosingTime1 = pickedTime;
-                      });
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                  ),
-                  child: Text(
-                    selectedClosingTime1.format(context),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 50),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                // Use minTemperature and maxTemperature as needed
-                print('Minimum Light: $minLdr');
-                print('Maximum Light: $maxLdr');
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF5B68DD),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'ตกลง',
-                style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
-              ),
-            ),
-            const SizedBox(width: 15),
-            ElevatedButton(
-              onPressed: () {
-                // Calculate the temperature difference
-                LdrDifference =
-                    maxLdr != null && minLdr != null ? maxLdr! - minLdr! : null;
-
-                // Print the difference
-                print('Temperature Difference: $LdrDifference');
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE85E5E),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'ยกเลิก',
-                style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
-              ),
-            )
-          ],
-        ),
-      ],
-    )));
+      ),
+    );
   }
 }
 
@@ -870,7 +888,7 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
+                        backgroundColor: Colors.blue,
                       ),
                       child: Text(
                         selectedClosingTime.format(context),
@@ -917,7 +935,7 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
+                        backgroundColor: Colors.blue,
                       ),
                       child: Text(
                         selectedClosingTime1.format(context),
@@ -1121,7 +1139,7 @@ class _PopupMoistureState extends State<PopupMoisture> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
+                        backgroundColor: Colors.blue,
                       ),
                       child: Text(
                         selectedClosingTime.format(context),
@@ -1168,7 +1186,7 @@ class _PopupMoistureState extends State<PopupMoisture> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
+                        backgroundColor: Colors.blue,
                       ),
                       child: Text(
                         selectedClosingTime1.format(context),

@@ -179,10 +179,8 @@ class _CardHeatState extends State<CardHeat> {
                       isAuto = value;
                       if (isAuto) {
                         switchToAutoMode();
-                        // print("auto on");
                       } else {
                         switchToManualMode();
-                        // print("auto on");
                       }
                     },
                   );
