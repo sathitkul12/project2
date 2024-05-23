@@ -226,11 +226,10 @@ class _PopupLightState extends State<PopupLight> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Use minLdr and maxLdr as needed
                     String openingTimeMessage =
-                        '${selectedOpeningTime.format(context)}';
+                        '${selectedOpeningTime.hour}:${selectedOpeningTime.minute}'; // ส่งเวลาโดยไม่รวม AM/PM
                     String closingTimeMessage =
-                        '${selectedClosingTime.format(context)}';
+                        '${selectedClosingTime.hour}:${selectedClosingTime.minute}';
                     mqttHandler.sendAutoModeCommand(
                         'esp32/lighton', openingTimeMessage);
                     mqttHandler.sendAutoModeCommand(
@@ -498,11 +497,10 @@ class _PopupTempState extends State<PopupTemp> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Use minLdr and maxLdr as needed
                     String openingTimeMessage =
-                        '${selectedOpeningTime.format(context)}';
+                        '${selectedOpeningTime.hour}:${selectedOpeningTime.minute}'; // ส่งเวลาโดยไม่รวม AM/PM
                     String closingTimeMessage =
-                        '${selectedClosingTime.format(context)}';
+                        '${selectedClosingTime.hour}:${selectedClosingTime.minute}';
                     mqttHandler.sendAutoModeCommand(
                         'esp32/fanon', openingTimeMessage);
                     mqttHandler.sendAutoModeCommand(
@@ -769,11 +767,10 @@ class _PopupSmellState extends State<PopupSmell> {
           children: [
             ElevatedButton(
               onPressed: () {
-                // Use minLdr and maxLdr as needed
                 String openingTimeMessage =
-                    '${selectedOpeningTime.format(context)}';
+                    '${selectedOpeningTime.hour}:${selectedOpeningTime.minute}'; // ส่งเวลาโดยไม่รวม AM/PM
                 String closingTimeMessage =
-                    '${selectedClosingTime.format(context)}';
+                    '${selectedClosingTime.hour}:${selectedClosingTime.minute}';
                 mqttHandler.sendAutoModeCommand(
                     'esp32/motor1on', openingTimeMessage);
                 mqttHandler.sendAutoModeCommand(
@@ -850,243 +847,240 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
+        body: SafeArea(
+            child: Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 40),
+          child: Center(
+            child: Text(
+              'ตั้งค่าการทำงานอัตโนมัติ',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color(0xffffffff),
+              ),
+            ),
+          ),
+        ),
+        // Temp
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.only(top: 40),
-              child: Center(
-                child: Text(
-                  'ตั้งค่าการทำงานอัตโนมัติ',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xffffffff),
-                  ),
+              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+              child: Text(
+                'Humidity Range',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffffffff),
                 ),
               ),
             ),
-            // Temp
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-                  child: Text(
-                    'Humidity Range',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffffffff),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: 100,
-                        child: TextField(
-                          controller: _minController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Minimum',
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              minHum = double.tryParse(value);
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: 100,
-                        child: TextField(
-                          controller: _maxController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Maximum',
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              maxHum = double.tryParse(value);
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-            // Opening Time
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-                  child: Text(
-                    'Opening Time',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffffffff),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        TimeOfDay? pickedTime = await showTimePicker(
-                          context: context,
-                          initialTime: selectedOpeningTime,
-                          builder: (BuildContext context, Widget? child) {
-                            return MediaQuery(
-                              data: MediaQuery.of(context)
-                                  .copyWith(alwaysUse24HourFormat: true),
-                              child: child!,
-                            );
-                          },
-                        );
-                        if (pickedTime != null &&
-                            pickedTime != selectedOpeningTime) {
-                          setState(() {
-                            selectedOpeningTime = pickedTime;
-                          });
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: Text(
-                        selectedOpeningTime.format(context),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-            // Closing Time
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-                  child: Text(
-                    'Closing Time',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffffffff),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        TimeOfDay? pickedTime = await showTimePicker(
-                          context: context,
-                          initialTime: selectedClosingTime,
-                          builder: (BuildContext context, Widget? child) {
-                            return MediaQuery(
-                              data: MediaQuery.of(context)
-                                  .copyWith(alwaysUse24HourFormat: true),
-                              child: child!,
-                            );
-                          },
-                        );
-                        if (pickedTime != null &&
-                            pickedTime != selectedClosingTime) {
-                          setState(() {
-                            selectedClosingTime = pickedTime;
-                          });
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: Text(
-                        selectedClosingTime.format(context),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Use minLdr and maxLdr as needed
-                    String openingTimeMessage =
-                        '${selectedOpeningTime.format(context)}';
-                    String closingTimeMessage =
-                        '${selectedClosingTime.format(context)}';
-                    mqttHandler.sendAutoModeCommand(
-                        'esp32/motor1on', openingTimeMessage);
-                    mqttHandler.sendAutoModeCommand(
-                        'esp32/motor1off', closingTimeMessage);
-                    print('Opening Time: $openingTimeMessage');
-                    print('Closing Time: $closingTimeMessage');
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF5B68DD),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 100,
+                    child: TextField(
+                      controller: _minController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Minimum',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          minHum = double.tryParse(value);
+                        });
+                      },
                     ),
-                  ),
-                  child: const Text(
-                    'ตกลง',
-                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
                   ),
                 ),
                 const SizedBox(width: 15),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE85E5E),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 100,
+                    child: TextField(
+                      controller: _maxController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Maximum',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          maxHum = double.tryParse(value);
+                        });
+                      },
                     ),
                   ),
-                  child: const Text(
-                    'ยกเลิก',
-                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
-                  ),
-                )
+                ),
               ],
             ),
           ],
         ),
-      ),
-    );
+
+        // Opening Time
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+              child: Text(
+                'Opening Time',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffffffff),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: selectedOpeningTime,
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      },
+                    );
+                    if (pickedTime != null &&
+                        pickedTime != selectedOpeningTime) {
+                      setState(() {
+                        selectedOpeningTime = pickedTime;
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: Text(
+                    selectedOpeningTime.format(context),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+
+        // Closing Time
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+              child: Text(
+                'Closing Time',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffffffff),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: selectedClosingTime,
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      },
+                    );
+                    if (pickedTime != null &&
+                        pickedTime != selectedClosingTime) {
+                      setState(() {
+                        selectedClosingTime = pickedTime;
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: Text(
+                    selectedClosingTime.format(context),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 50),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                String openingTimeMessage =
+                    '${selectedOpeningTime.hour}:${selectedOpeningTime.minute}'; // ส่งเวลาโดยไม่รวม AM/PM
+                String closingTimeMessage =
+                    '${selectedClosingTime.hour}:${selectedClosingTime.minute}';
+                mqttHandler.sendAutoModeCommand(
+                    'esp32/motor1on', openingTimeMessage);
+                mqttHandler.sendAutoModeCommand(
+                    'esp32/motor1off', closingTimeMessage);
+                print('Opening Time: $openingTimeMessage');
+                print('Closing Time: $closingTimeMessage');
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF5B68DD),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'ตกลง',
+                style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
+              ),
+            ),
+            const SizedBox(width: 15),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE85E5E),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'ยกเลิก',
+                style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
+              ),
+            )
+          ],
+        ),
+      ],
+    )));
   }
 }
 
@@ -1125,243 +1119,240 @@ class _PopupMoistureState extends State<PopupMoisture> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
+        body: SafeArea(
+            child: Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 40),
+          child: Center(
+            child: Text(
+              'ตั้งค่าการทำงานอัตโนมัติ',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color(0xffffffff),
+              ),
+            ),
+          ),
+        ),
+        // Temp
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.only(top: 40),
-              child: Center(
-                child: Text(
-                  'ตั้งค่าการทำงานอัตโนมัติ',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xffffffff),
-                  ),
+              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+              child: Text(
+                'Moisture Range',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffffffff),
                 ),
               ),
             ),
-            // Temp
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-                  child: Text(
-                    'Moisture Range',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffffffff),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: 100,
-                        child: TextField(
-                          controller: _minController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Minimum',
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              minSoil = double.tryParse(value);
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: 100,
-                        child: TextField(
-                          controller: _maxController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Maximum',
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              maxSoil = double.tryParse(value);
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-            // Opening Time
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-                  child: Text(
-                    'Opening Time',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffffffff),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        TimeOfDay? pickedTime = await showTimePicker(
-                          context: context,
-                          initialTime: selectedOpeningTime,
-                          builder: (BuildContext context, Widget? child) {
-                            return MediaQuery(
-                              data: MediaQuery.of(context)
-                                  .copyWith(alwaysUse24HourFormat: true),
-                              child: child!,
-                            );
-                          },
-                        );
-                        if (pickedTime != null &&
-                            pickedTime != selectedOpeningTime) {
-                          setState(() {
-                            selectedOpeningTime = pickedTime;
-                          });
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: Text(
-                        selectedOpeningTime.format(context),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-            // Closing Time
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
-                  child: Text(
-                    'Closing Time',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffffffff),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        TimeOfDay? pickedTime = await showTimePicker(
-                          context: context,
-                          initialTime: selectedClosingTime,
-                          builder: (BuildContext context, Widget? child) {
-                            return MediaQuery(
-                              data: MediaQuery.of(context)
-                                  .copyWith(alwaysUse24HourFormat: true),
-                              child: child!,
-                            );
-                          },
-                        );
-                        if (pickedTime != null &&
-                            pickedTime != selectedClosingTime) {
-                          setState(() {
-                            selectedClosingTime = pickedTime;
-                          });
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: Text(
-                        selectedClosingTime.format(context),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Use minLdr and maxLdr as needed
-                    String openingTimeMessage =
-                        '${selectedOpeningTime.format(context)}';
-                    String closingTimeMessage =
-                        '${selectedClosingTime.format(context)}';
-                    mqttHandler.sendAutoModeCommand(
-                        'esp32/motor2on', openingTimeMessage);
-                    mqttHandler.sendAutoModeCommand(
-                        'esp32/motor2off', closingTimeMessage);
-                    print('Opening Time: $openingTimeMessage');
-                    print('Closing Time: $closingTimeMessage');
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF5B68DD),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 100,
+                    child: TextField(
+                      controller: _minController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Minimum',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          minSoil = double.tryParse(value);
+                        });
+                      },
                     ),
-                  ),
-                  child: const Text(
-                    'ตกลง',
-                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
                   ),
                 ),
                 const SizedBox(width: 15),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE85E5E),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 100,
+                    child: TextField(
+                      controller: _maxController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Maximum',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          maxSoil = double.tryParse(value);
+                        });
+                      },
                     ),
                   ),
-                  child: const Text(
-                    'ยกเลิก',
-                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
-                  ),
-                )
+                ),
               ],
             ),
           ],
         ),
-      ),
-    );
+
+        // Opening Time
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+              child: Text(
+                'Opening Time',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffffffff),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: selectedOpeningTime,
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      },
+                    );
+                    if (pickedTime != null &&
+                        pickedTime != selectedOpeningTime) {
+                      setState(() {
+                        selectedOpeningTime = pickedTime;
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: Text(
+                    selectedOpeningTime.format(context),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+
+        // Closing Time
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 70, top: 20, bottom: 10),
+              child: Text(
+                'Closing Time',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffffffff),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: selectedClosingTime,
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      },
+                    );
+                    if (pickedTime != null &&
+                        pickedTime != selectedClosingTime) {
+                      setState(() {
+                        selectedClosingTime = pickedTime;
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: Text(
+                    selectedClosingTime.format(context),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 50),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                String openingTimeMessage =
+                    '${selectedOpeningTime.hour}:${selectedOpeningTime.minute}'; // ส่งเวลาโดยไม่รวม AM/PM
+                String closingTimeMessage =
+                    '${selectedClosingTime.hour}:${selectedClosingTime.minute}';
+                mqttHandler.sendAutoModeCommand(
+                    'esp32/motor2on', openingTimeMessage);
+                mqttHandler.sendAutoModeCommand(
+                    'esp32/motor2off', closingTimeMessage);
+                print('Opening Time: $openingTimeMessage');
+                print('Closing Time: $closingTimeMessage');
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF5B68DD),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'ตกลง',
+                style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
+              ),
+            ),
+            const SizedBox(width: 15),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE85E5E),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'ยกเลิก',
+                style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
+              ),
+            )
+          ],
+        ),
+      ],
+    )));
   }
 }
 
