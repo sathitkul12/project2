@@ -17,7 +17,6 @@ class _PopupLightState extends State<PopupLight> {
   final TextEditingController _maxController = TextEditingController();
   List<String> minute =
       List.generate(60, (index) => index.toString().padLeft(2, '0'));
-
   double? minLdr;
   double? maxLdr;
   TimeOfDay selectedOpeningTime = TimeOfDay.now();
@@ -219,9 +218,9 @@ class _PopupLightState extends State<PopupLight> {
                     String closingTimeMessage =
                         '${selectedClosingTime.format(context)}';
                     mqttHandler.sendAutoModeCommand(
-                        'esp32/timeon', openingTimeMessage);
+                        'esp32/lighton', openingTimeMessage);
                     mqttHandler.sendAutoModeCommand(
-                        'esp32/timeoff', closingTimeMessage);
+                        'esp32/lightoff', closingTimeMessage);
                     print('Opening Time: $openingTimeMessage');
                     print('Closing Time: $closingTimeMessage');
                     Navigator.pop(context);
@@ -239,15 +238,7 @@ class _PopupLightState extends State<PopupLight> {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () {
-                    // Calculate the light difference
-                    LdrDifference = maxLdr != null && minLdr != null
-                        ? maxLdr! - minLdr!
-                        : null;
-                    // Print the difference
-                    print('Light Difference: $LdrDifference');
-                    Navigator.pop(context);
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE85E5E),
                     shape: RoundedRectangleBorder(
@@ -285,11 +276,17 @@ class _PopupTempState extends State<PopupTemp> {
       List.generate(60, (index) => index.toString().padLeft(2, '0'));
   double? minTemp;
   double? maxTemp;
-  String selectedTime = '00';
-  String selectedMinute = '00';
+  TimeOfDay selectedOpeningTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime = TimeOfDay.now();
-  TimeOfDay selectedClosingTime1 = TimeOfDay.now();
-  double? temperatureDifference;
+
+  late MqttHandler mqttHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    mqttHandler = MqttHandler();
+    mqttHandler.connectAndSubscribe();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -394,12 +391,12 @@ class _PopupTempState extends State<PopupTemp> {
                       onPressed: () async {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
-                          initialTime: selectedClosingTime,
+                          initialTime: selectedOpeningTime,
                         );
                         if (pickedTime != null &&
-                            pickedTime != selectedClosingTime) {
+                            pickedTime != selectedOpeningTime) {
                           setState(() {
-                            selectedClosingTime = pickedTime;
+                            selectedOpeningTime = pickedTime;
                           });
                         }
                       },
@@ -407,7 +404,7 @@ class _PopupTempState extends State<PopupTemp> {
                         backgroundColor: Colors.blue,
                       ),
                       child: Text(
-                        selectedClosingTime.format(context),
+                        selectedOpeningTime.format(context),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -441,12 +438,12 @@ class _PopupTempState extends State<PopupTemp> {
                       onPressed: () async {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
-                          initialTime: selectedClosingTime1,
+                          initialTime: selectedClosingTime,
                         );
                         if (pickedTime != null &&
-                            pickedTime != selectedClosingTime1) {
+                            pickedTime != selectedClosingTime) {
                           setState(() {
-                            selectedClosingTime1 = pickedTime;
+                            selectedClosingTime = pickedTime;
                           });
                         }
                       },
@@ -454,7 +451,7 @@ class _PopupTempState extends State<PopupTemp> {
                         backgroundColor: Colors.blue,
                       ),
                       child: Text(
-                        selectedClosingTime1.format(context),
+                        selectedClosingTime.format(context),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -471,9 +468,17 @@ class _PopupTempState extends State<PopupTemp> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Use minTemperature and maxTemperature as needed
-                    print('Minimum Temperature: $minTemp');
-                    print('Maximum Temperature: $maxTemp');
+                    // Use minLdr and maxLdr as needed
+                    String openingTimeMessage =
+                        '${selectedOpeningTime.format(context)}';
+                    String closingTimeMessage =
+                        '${selectedClosingTime.format(context)}';
+                    mqttHandler.sendAutoModeCommand(
+                        'esp32/fanon', openingTimeMessage);
+                    mqttHandler.sendAutoModeCommand(
+                        'esp32/fanoff', closingTimeMessage);
+                    print('Opening Time: $openingTimeMessage');
+                    print('Closing Time: $closingTimeMessage');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -489,9 +494,7 @@ class _PopupTempState extends State<PopupTemp> {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE85E5E),
                     shape: RoundedRectangleBorder(
@@ -529,9 +532,17 @@ class _PopupSmellState extends State<PopupSmell> {
       List.generate(60, (index) => index.toString().padLeft(2, '0'));
   double? minMq;
   double? maxMq;
-  double? MqDifference;
+  TimeOfDay selectedOpeningTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime = TimeOfDay.now();
-  TimeOfDay selectedClosingTime1 = TimeOfDay.now();
+  late MqttHandler mqttHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    mqttHandler = MqttHandler();
+    mqttHandler.connectAndSubscribe();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -635,12 +646,12 @@ class _PopupSmellState extends State<PopupSmell> {
                   onPressed: () async {
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
-                      initialTime: selectedClosingTime,
+                      initialTime: selectedOpeningTime,
                     );
                     if (pickedTime != null &&
-                        pickedTime != selectedClosingTime) {
+                        pickedTime != selectedOpeningTime) {
                       setState(() {
-                        selectedClosingTime = pickedTime;
+                        selectedOpeningTime = pickedTime;
                       });
                     }
                   },
@@ -648,7 +659,7 @@ class _PopupSmellState extends State<PopupSmell> {
                     backgroundColor: Colors.blue,
                   ),
                   child: Text(
-                    selectedClosingTime.format(context),
+                    selectedOpeningTime.format(context),
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
@@ -682,12 +693,12 @@ class _PopupSmellState extends State<PopupSmell> {
                   onPressed: () async {
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
-                      initialTime: selectedClosingTime1,
+                      initialTime: selectedClosingTime,
                     );
                     if (pickedTime != null &&
-                        pickedTime != selectedClosingTime1) {
+                        pickedTime != selectedClosingTime) {
                       setState(() {
-                        selectedClosingTime1 = pickedTime;
+                        selectedClosingTime = pickedTime;
                       });
                     }
                   },
@@ -695,7 +706,7 @@ class _PopupSmellState extends State<PopupSmell> {
                     backgroundColor: Colors.blue,
                   ),
                   child: Text(
-                    selectedClosingTime1.format(context),
+                    selectedClosingTime.format(context),
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
@@ -712,9 +723,17 @@ class _PopupSmellState extends State<PopupSmell> {
           children: [
             ElevatedButton(
               onPressed: () {
-                // Use minTemperature and maxTemperature as needed
-                print('Minimum Ammonia: $minMq');
-                print('Maximum Ammonia: $maxMq');
+                // Use minLdr and maxLdr as needed
+                String openingTimeMessage =
+                    '${selectedOpeningTime.format(context)}';
+                String closingTimeMessage =
+                    '${selectedClosingTime.format(context)}';
+                mqttHandler.sendAutoModeCommand(
+                    'esp32/motor1on', openingTimeMessage);
+                mqttHandler.sendAutoModeCommand(
+                    'esp32/motor1off', closingTimeMessage);
+                print('Opening Time: $openingTimeMessage');
+                print('Closing Time: $closingTimeMessage');
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
@@ -730,9 +749,7 @@ class _PopupSmellState extends State<PopupSmell> {
             ),
             const SizedBox(width: 15),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFE85E5E),
                 shape: RoundedRectangleBorder(
@@ -769,11 +786,18 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
 
   double? minHum;
   double? maxHum;
-  String selectedTime = '00';
-  String selectedMinute = '00';
+
+  TimeOfDay selectedOpeningTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime = TimeOfDay.now();
-  TimeOfDay selectedClosingTime1 = TimeOfDay.now();
   double? HumDifference;
+  late MqttHandler mqttHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    mqttHandler = MqttHandler();
+    mqttHandler.connectAndSubscribe();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -878,12 +902,12 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                       onPressed: () async {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
-                          initialTime: selectedClosingTime,
+                          initialTime: selectedOpeningTime,
                         );
                         if (pickedTime != null &&
-                            pickedTime != selectedClosingTime) {
+                            pickedTime != selectedOpeningTime) {
                           setState(() {
-                            selectedClosingTime = pickedTime;
+                            selectedOpeningTime = pickedTime;
                           });
                         }
                       },
@@ -891,7 +915,7 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                         backgroundColor: Colors.blue,
                       ),
                       child: Text(
-                        selectedClosingTime.format(context),
+                        selectedOpeningTime.format(context),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -925,12 +949,12 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                       onPressed: () async {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
-                          initialTime: selectedClosingTime1,
+                          initialTime: selectedClosingTime,
                         );
                         if (pickedTime != null &&
-                            pickedTime != selectedClosingTime1) {
+                            pickedTime != selectedClosingTime) {
                           setState(() {
-                            selectedClosingTime1 = pickedTime;
+                            selectedClosingTime = pickedTime;
                           });
                         }
                       },
@@ -938,7 +962,7 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                         backgroundColor: Colors.blue,
                       ),
                       child: Text(
-                        selectedClosingTime1.format(context),
+                        selectedClosingTime.format(context),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -955,16 +979,25 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Use minTemperature and maxTemperature as needed
-                    print('Minimum Humidity: $minHum');
-                    print('Maximum Humidity: $maxHum');
+                    // Use minLdr and maxLdr as needed
+                    String openingTimeMessage =
+                        '${selectedOpeningTime.format(context)}';
+                    String closingTimeMessage =
+                        '${selectedClosingTime.format(context)}';
+                    mqttHandler.sendAutoModeCommand(
+                        'esp32/motor1on', openingTimeMessage);
+                    mqttHandler.sendAutoModeCommand(
+                        'esp32/motor1off', closingTimeMessage);
+                    print('Opening Time: $openingTimeMessage');
+                    print('Closing Time: $closingTimeMessage');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF5B68DD),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
+                    backgroundColor: const Color(0xFF5B68DD),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   child: const Text(
                     'ตกลง',
                     style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
@@ -972,16 +1005,7 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () {
-                    // Calculate the temperature difference
-                    HumDifference = maxHum != null && minHum != null
-                        ? maxHum! - minHum!
-                        : null;
-
-                    // Print the difference
-                    print('Temperature Difference: $HumDifference');
-                    Navigator.pop(context);
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE85E5E),
                     shape: RoundedRectangleBorder(
@@ -1022,9 +1046,17 @@ class _PopupMoistureState extends State<PopupMoisture> {
   double? maxSoil;
   String selectedTime = '00';
   String selectedMinute = '00';
+  TimeOfDay selectedOpeningTime = TimeOfDay.now();
   TimeOfDay selectedClosingTime = TimeOfDay.now();
-  TimeOfDay selectedClosingTime1 = TimeOfDay.now();
   double? SoilDifference;
+  late MqttHandler mqttHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    mqttHandler = MqttHandler();
+    mqttHandler.connectAndSubscribe();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1129,12 +1161,12 @@ class _PopupMoistureState extends State<PopupMoisture> {
                       onPressed: () async {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
-                          initialTime: selectedClosingTime,
+                          initialTime: selectedOpeningTime,
                         );
                         if (pickedTime != null &&
-                            pickedTime != selectedClosingTime) {
+                            pickedTime != selectedOpeningTime) {
                           setState(() {
-                            selectedClosingTime = pickedTime;
+                            selectedOpeningTime = pickedTime;
                           });
                         }
                       },
@@ -1142,7 +1174,7 @@ class _PopupMoistureState extends State<PopupMoisture> {
                         backgroundColor: Colors.blue,
                       ),
                       child: Text(
-                        selectedClosingTime.format(context),
+                        selectedOpeningTime.format(context),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -1176,12 +1208,12 @@ class _PopupMoistureState extends State<PopupMoisture> {
                       onPressed: () async {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
-                          initialTime: selectedClosingTime1,
+                          initialTime: selectedClosingTime,
                         );
                         if (pickedTime != null &&
-                            pickedTime != selectedClosingTime1) {
+                            pickedTime != selectedClosingTime) {
                           setState(() {
-                            selectedClosingTime1 = pickedTime;
+                            selectedClosingTime = pickedTime;
                           });
                         }
                       },
@@ -1189,7 +1221,7 @@ class _PopupMoistureState extends State<PopupMoisture> {
                         backgroundColor: Colors.blue,
                       ),
                       child: Text(
-                        selectedClosingTime1.format(context),
+                        selectedClosingTime.format(context),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -1206,16 +1238,25 @@ class _PopupMoistureState extends State<PopupMoisture> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Use minTemperature and maxTemperature as needed
-                    print('Minimum Moisture: $minSoil');
-                    print('Maximum Moisture: $maxSoil');
+                    // Use minLdr and maxLdr as needed
+                    String openingTimeMessage =
+                        '${selectedOpeningTime.format(context)}';
+                    String closingTimeMessage =
+                        '${selectedClosingTime.format(context)}';
+                    mqttHandler.sendAutoModeCommand(
+                        'esp32/motor2on', openingTimeMessage);
+                    mqttHandler.sendAutoModeCommand(
+                        'esp32/motor2off', closingTimeMessage);
+                    print('Opening Time: $openingTimeMessage');
+                    print('Closing Time: $closingTimeMessage');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF5B68DD),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
+                    backgroundColor: const Color(0xFF5B68DD),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   child: const Text(
                     'ตกลง',
                     style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
@@ -1223,16 +1264,7 @@ class _PopupMoistureState extends State<PopupMoisture> {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () {
-                    // Calculate the temperature difference
-                    SoilDifference = maxSoil != null && minSoil != null
-                        ? maxSoil! - minSoil!
-                        : null;
-
-                    // Print the difference
-                    print('Temperature Difference: $SoilDifference');
-                    Navigator.pop(context);
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE85E5E),
                     shape: RoundedRectangleBorder(
