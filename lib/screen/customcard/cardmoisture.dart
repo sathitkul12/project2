@@ -79,28 +79,28 @@ class _CardMoistureState extends State<CardMoisture> {
   void turnOnRelay3() {
     if (mqttHandler.client.connectionStatus!.state ==
         MqttConnectionState.connected) {
-      mqttHandler.controlRelay('esp32/relay3', 'on');
+      mqttHandler.controlRelay('esp32/relay4', 'on');
     }
   }
 
   void turnOffRelay3() {
     if (mqttHandler.client.connectionStatus!.state ==
         MqttConnectionState.connected) {
-      mqttHandler.controlRelay('esp32/relay3', 'off');
+      mqttHandler.controlRelay('esp32/relay4', 'off');
     }
   }
 
   void turnOnRelay4() {
     if (mqttHandler.client.connectionStatus!.state ==
         MqttConnectionState.connected) {
-      mqttHandler.controlRelay('esp32/relay4', 'on');
+      mqttHandler.controlRelay('esp32/relay3', 'on');
     }
   }
 
   void turnOffRelay4() {
     if (mqttHandler.client.connectionStatus!.state ==
         MqttConnectionState.connected) {
-      mqttHandler.controlRelay('esp32/relay4', 'off');
+      mqttHandler.controlRelay('esp32/relay3', 'off');
     }
   }
 

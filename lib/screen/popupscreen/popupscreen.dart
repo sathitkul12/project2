@@ -136,6 +136,13 @@ class _PopupLightState extends State<PopupLight> {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
                           initialTime: selectedOpeningTime,
+                          builder: (BuildContext context, Widget? child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: true),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedTime != null &&
                             pickedTime != selectedOpeningTime) {
@@ -183,6 +190,13 @@ class _PopupLightState extends State<PopupLight> {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
                           initialTime: selectedClosingTime,
+                          builder: (BuildContext context, Widget? child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: true),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedTime != null &&
                             pickedTime != selectedClosingTime) {
@@ -238,7 +252,9 @@ class _PopupLightState extends State<PopupLight> {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE85E5E),
                     shape: RoundedRectangleBorder(
@@ -392,6 +408,13 @@ class _PopupTempState extends State<PopupTemp> {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
                           initialTime: selectedOpeningTime,
+                          builder: (BuildContext context, Widget? child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: true),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedTime != null &&
                             pickedTime != selectedOpeningTime) {
@@ -439,6 +462,13 @@ class _PopupTempState extends State<PopupTemp> {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
                           initialTime: selectedClosingTime,
+                          builder: (BuildContext context, Widget? child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: true),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedTime != null &&
                             pickedTime != selectedClosingTime) {
@@ -494,7 +524,9 @@ class _PopupTempState extends State<PopupTemp> {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE85E5E),
                     shape: RoundedRectangleBorder(
@@ -647,6 +679,13 @@ class _PopupSmellState extends State<PopupSmell> {
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
                       initialTime: selectedOpeningTime,
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      },
                     );
                     if (pickedTime != null &&
                         pickedTime != selectedOpeningTime) {
@@ -694,6 +733,13 @@ class _PopupSmellState extends State<PopupSmell> {
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
                       initialTime: selectedClosingTime,
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      },
                     );
                     if (pickedTime != null &&
                         pickedTime != selectedClosingTime) {
@@ -749,7 +795,9 @@ class _PopupSmellState extends State<PopupSmell> {
             ),
             const SizedBox(width: 15),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFE85E5E),
                 shape: RoundedRectangleBorder(
@@ -903,6 +951,13 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
                           initialTime: selectedOpeningTime,
+                          builder: (BuildContext context, Widget? child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: true),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedTime != null &&
                             pickedTime != selectedOpeningTime) {
@@ -950,6 +1005,13 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
                           initialTime: selectedClosingTime,
+                          builder: (BuildContext context, Widget? child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: true),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedTime != null &&
                             pickedTime != selectedClosingTime) {
@@ -1005,7 +1067,9 @@ class _PopupTempFloorState extends State<PopupTempFloor> {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE85E5E),
                     shape: RoundedRectangleBorder(
@@ -1162,6 +1226,13 @@ class _PopupMoistureState extends State<PopupMoisture> {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
                           initialTime: selectedOpeningTime,
+                          builder: (BuildContext context, Widget? child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: true),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedTime != null &&
                             pickedTime != selectedOpeningTime) {
@@ -1209,6 +1280,13 @@ class _PopupMoistureState extends State<PopupMoisture> {
                         TimeOfDay? pickedTime = await showTimePicker(
                           context: context,
                           initialTime: selectedClosingTime,
+                          builder: (BuildContext context, Widget? child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: true),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedTime != null &&
                             pickedTime != selectedClosingTime) {
@@ -1264,7 +1342,9 @@ class _PopupMoistureState extends State<PopupMoisture> {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context); // ย้อนกลับไปที่หน้าก่อนหน้านี้
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE85E5E),
                     shape: RoundedRectangleBorder(
