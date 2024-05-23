@@ -80,14 +80,14 @@ class _CardAmmoniaState extends State<CardAmmonia> {
   void turnOnRelay2() {
     if (mqttHandler.client.connectionStatus!.state ==
         MqttConnectionState.connected) {
-      mqttHandler.controlRelay('esp32/relay1', 'on');
+      mqttHandler.controlRelay('esp32/relay2', 'on');
     }
   }
 
   void turnOffRelay2() {
     if (mqttHandler.client.connectionStatus!.state ==
         MqttConnectionState.connected) {
-      mqttHandler.controlRelay('esp32/relay1', 'off');
+      mqttHandler.controlRelay('esp32/relay2', 'off');
     }
   }
 

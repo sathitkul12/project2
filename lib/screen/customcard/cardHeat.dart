@@ -68,14 +68,14 @@ class _CardHeatState extends State<CardHeat> {
   void turnOnRelay1() {
     if (mqttHandler.client.connectionStatus!.state ==
         MqttConnectionState.connected) {
-      mqttHandler.controlRelay('esp32/relay2', 'on');
+      mqttHandler.controlRelay('esp32/relay1', 'on');
     }
   }
 
   void turnOffRelay1() {
     if (mqttHandler.client.connectionStatus!.state ==
         MqttConnectionState.connected) {
-      mqttHandler.controlRelay('esp32/relay2', 'off');
+      mqttHandler.controlRelay('esp32/relay1', 'off');
     }
   }
 
